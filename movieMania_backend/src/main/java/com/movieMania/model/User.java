@@ -6,16 +6,18 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Data;
 
 @Entity // Marks the class as a JPA entity
 @Table(name = "users") // Maps the class to the "users" table in the database
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @Id // Marks the field as the primary key of the entity.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    private Long userId;
 
     @Column(nullable = false, unique = true)
     private String username;
