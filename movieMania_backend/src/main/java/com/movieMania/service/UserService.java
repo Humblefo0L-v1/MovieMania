@@ -6,6 +6,7 @@ import com.movieMania.dto.RegisterRequest;
 import com.movieMania.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import com.movieMania.dto.AuthResponse;
+import com.movieMania.dto.LoginRequest;
 import com.movieMania.model.User;
 import com.movieMania.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +57,15 @@ public class UserService {
         return new AuthResponse(token, user.getUserId(), user.getUsername(), user.getRole(), user.getEmail());
     }
 
-    public AuthResponse login() {
-        return null;
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getUserId());
+        return new AuthResponse(token, user.getUserId(), user.getUsername(), user.getRole(), user.getEmail());
     }
 }
